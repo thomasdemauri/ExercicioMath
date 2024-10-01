@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class MainController extends Controller
 {
-    public function home()
+    public function home(): View
     {
+        return view('home');
+    }
 
+    public function viewExercises(): View
+    {
+        return view('operations');
     }
 
     /**
