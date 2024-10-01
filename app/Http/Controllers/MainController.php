@@ -7,7 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use PhpOption\None;
 use PhpParser\Node\Expr\Throw_;
+use Symfony\Component\HttpFoundation\RedirectResponse as HttpFoundationRedirectResponse;
 
 class MainController extends Controller
 {
@@ -51,6 +53,9 @@ class MainController extends Controller
             $exercises[] = $this->generateExercise($min, $max, $operations, $index);
         }
 
+        // Set the exercises in the session
+        session(['exercises' => $exercises]);
+
         return view('operations', [ 'exercises' => $exercises ]);
     }
 
@@ -60,17 +65,39 @@ class MainController extends Controller
     public function print()
     {
 
+        if (!session()->has('exercises')) {
+            return redirect()->route('home');
+        }
+
+        $exercises = session('exercises'); 
+
+        echo '<h2> Exercises </h2>';
+        echo '<pre>';
+            foreach ($exercises as $exercise) {
+                echo '<p>';
+                echo $exercise['equation'];
+                echo '</p>';
+            }
+        echo '</pre>';
+
+        echo '<hr>';
+
+        echo '<h2> Solution </h2>';
+        echo '<pre>';
+            foreach ($exercises as $exercise) {
+                echo '<p>';
+                echo $exercise['equation'] . $exercise['solution'];
+                echo '</p>';
+            }
+        echo '</pre>';
+
+        echo '<a href="/">Voltar</a>';
     }
 
     /**
-     * Export exercises to a .txt file
+     * Generate a random exercise 
      */
-    public function export()
-    {
-
-    }
-
-    private function generateExercise($min, $max, $operations, $index)
+    private function generateExercise($min, $max, $operations, $index): array|RedirectResponse
     {
         $term_a = rand($min, $max);
         $term_b = rand($min, $max);
