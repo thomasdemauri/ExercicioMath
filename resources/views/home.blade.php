@@ -6,7 +6,8 @@
 </h3>
 
 <!-- form -->
-<form action="#" method="post">
+<form action="{{ route('generate') }}" method="post">
+    @csrf
     <div class="container border border-primary rounded-3 p-5">
         <div class="row gap-5">
 
